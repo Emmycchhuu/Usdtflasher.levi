@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonFlare USDT Toolkit</title>
+    <style>
+        :root {
+            --neon-cyan: #0ff;
+            --neon-pink: #f0f;
+            --bg-dark: #0a0a1a;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Courier New', monospace;
+            color: var(--neon-cyan);
+            margin: 0;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .page {
+            display: none;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 30px var(--neon-cyan);
+            border-radius: 5px;
+        }
+
+        .active-page {
+            display: block;
+        }
+
+        .warning {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff4444;
+            font-size: 1.2rem;
+            border: 2px solid #ff4444;
+            padding: 2rem;
+            margin: 2rem 0;
+            animation: pulse 2s infinite;
+        }
+
+        button {
+            background: var(--neon-pink);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        input, select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        .address-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--neon-pink);
+            padding: 1rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--neon-cyan);
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .instruction {
+            font-size: 0.9rem;
+            color: var(--neon-pink);
+            margin: 1rem 0;
+        }
+
+        .error {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff4444;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Disclaimer Page -->
+    <div id="page1" class="page active-page">
+        <div class="warning">
+            ⚠️ OUR SOFTWARE IS MEANT FOR EDUCATIONAL PURPOSES ⚠️<br><br>
+            Should not be used to scam others<br>
+            We will not be responsible for any damages caused<br>
+            Use with extreme caution ⚠️
+        </div>
+        <button onclick="showPage('page2')">FLASH USDT NOW</button>
+    </div>
+
+    <!-- Flashing Page -->
+    <div id="page2" class="page">
+        <h2>USDT FLASH INTERFACE</h2>
+        <input type="text" placeholder="Recipient USDT Address">
+        
+        <select>
+            <option>Select Wallet Type</option>
+            <option>Trust Wallet</option>
+            <option>Exodus Wallet</option>
+            <option>Binance Wallet</option>
+            <option>Coinbase Wallet</option>
+        </select>
+
+        <select>
+            <option>Select Network</option>
+            <option>TRC20</option>
+            <option>ERC20</option>
+            <option>BEP20</option>
+        </select>
+
+        <input type="email" placeholder="Your Email Address">
+        <div class="instruction">
+            This will generate a receipt and send to your email to trick recipient
+        </div>
+
+        <input type="text" placeholder="Enter License Key" id="licenseKey">
+        <div class="error" id="keyError"></div>
+
+        <button onclick="attemptFlash()">FLASH NOW</button>
+        <button onclick="showPage('page3')">BUY LICENSE KEY NOW</button>
+    </div>
+
+    <!-- Purchase Page -->
+    <div id="page3" class="page">
+        <h2>LICENSE ACQUISITION PORTAL</h2>
+        <div class="instruction">
+            License key is for lifetime access - 500 USDT (TRC20 only)
+        </div>
+
+        <input type="text" placeholder="Your Full Name">
+        <input type="email" placeholder="Your Email Address">
+
+        <div class="address-box" id="paymentAddress">
+            TWaB9s2nBVMbDaZaVNpAYMKXqzc6ZE26CY
+        </div>
+
+        <button onclick="verifyPayment()">I HAVE MADE PAYMENTS</button>
+        
+        <div class="loading" id="paymentLoading">
+            <div class="spinner"></div>
+            AWAITING PAYMENT CONFIRMATION
+        </div>
+
+        <div class="instruction">
+            If license not received within 24 hours, contact:<br>
+            accbombb@gmail.com with payment proof
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            document.getElementById(pageId).classList.add('active-page');
+        }
+
+        function attemptFlash() {
+            const key = document.getElementById('licenseKey').value;
+            if (!key || key.length < 10) {
+                document.getElementById('keyError').textContent = "INVALID OR EXPIRED LICENSE KEY";
+                return;
+            }
+            // Add actual license verification logic here
+        }
+
+        // Payment Address Copy Functionality
+        document.getElementById('paymentAddress').addEventListener('click', function() {
+            navigator.clipboard.writeText(this.innerText);
+            alert('Address copied to clipboard!');
+        });
+
+        function verifyPayment() {
+            const loading = document.getElementById('paymentLoading');
+            loading.style.display = 'flex';
+            
+            // Simulate payment verification
+            setTimeout(() => {
+                loading.style.display = 'none';
+                alert('Payment received! License key has been sent to your email.');
+            }, 3000);
+        }
+
+        // Add glowing effects to all inputs on focus
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', () => {
+                element.style.boxShadow = '0 0 15px var(--neon-cyan)';
+            });
+            element.addEventListener('blur', () => {
+                element.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
